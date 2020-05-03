@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator } from 'react-native';
-// import Icon from 'react-native-vector-icons/FontAwesome';
+import { ActivityIndicator, View } from 'react-native';
 import {
     Container,
     Row,
-    Header, Toast, List, ListItem, Thumbnail, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Text, Item, Input
+    List,
+    ListItem,
+    Thumbnail,
+    Content,
+    Button,
+    Left,
+    Right,
+    Body,
+    Icon,
+    Text,
+    Item,
+    Input
 } from 'native-base';
 import { WEB, IMAGE_WEB, LANGUAGE, API_KEY } from "../const"
-
 
 function HomeScreen({ navigation }) {
     const [isLoading, setLoading] = useState(false);
@@ -16,11 +25,13 @@ function HomeScreen({ navigation }) {
     const [list, setList] = useState([]);
     const [search, setSearch] = useState(true);
     const [pagesNumber, setPagesNumber] = useState(1);
+    const [textForUser, setTextForUser] = useState("");
 
     const doGet = (inNewSearch, inPageNumber) => {
 
         setSearch(inNewSearch);
         setLoading(inNewSearch);
+        setTextForUser("");
 
         console.log(searchText)
         fetch(WEB + API_KEY + LANGUAGE + '&query=' + searchText + '&page=' + inPageNumber + '&include_adult=false')
@@ -30,23 +41,15 @@ function HomeScreen({ navigation }) {
                 setData(json.results)
                 setPagesNumber(json.total_pages)
             })
-            .catch((error) => console.error(error))
+            .catch((error) => {
+                setTextForUser("Problem with internet connection")
+                // console.error(error)
+            })
             .finally(() => {
+                setTextForUser("Currently your movie is not available")
                 setLoading(false);
             });
     }
-
-    // const goToDetailsView = () => {
-
-    // }
-
-    // const showToast = (text) => {
-    //     () => Toast.show({
-    //         text: { text },
-    //         buttonText: "Okay",
-    //         duration: 3000
-    //     })
-    // }
 
     useEffect(() => {
         var inNewList = data.map(element => (
@@ -82,17 +85,10 @@ function HomeScreen({ navigation }) {
             setList([...list, ...inNewList])
             setPagesNumber(pagesNumber - 1)
         }
-
     }, [data])
 
     return (
-        <Container>
-            {/* <Header>
-                <Item>
-                <Input placeholder='Find your movie' />
-                <Icon active name='search' />
-                </Item>
-            </Header> */}
+        <Container style={{ padding: 10 }}>
             <Content>
                 <Item>
                     <Input
@@ -109,20 +105,36 @@ function HomeScreen({ navigation }) {
                     />
                 </Item>
                 {isLoading ? <ActivityIndicator size="large" color="#0000ff" /> :
-                    <List>
-                        {list}
-                        {(list.length !== 0 && pagesNumber !== 1) ?
-                            <ListItem thumbnail key={999999}>
-                                <Body>
-                                    <Button onPress={() => doGet(false, pagesNumber)}>
-                                        <Text>Load more movie</Text>
-                                    </Button>
-                                </Body>
-                            </ListItem> : null}
-                    </List>}
+                    <View >
+                        {list.length === 0 ?
+                            <Text
+                                style={{
+                                    marginTop: 20,
+                                    flex: 1,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: 20,
+                                    color: "red"
+                                }}>
+                                {textForUser}
+                            </Text>
+                            :
+                            <List>
+                                {list}
+                                {(list.length !== 0 && pagesNumber !== 1) ?
+                                    <ListItem thumbnail key={999999}>
+                                        <Body>
+                                            <Button
+                                                onPress={() => doGet(false, pagesNumber)}
+                                            >
+                                                <Text>Load more movies</Text>
+                                            </Button>
+                                        </Body>
+                                    </ListItem> : null}
+                            </List>}
+                    </View>}
             </Content>
         </Container>
-
     );
 }
 

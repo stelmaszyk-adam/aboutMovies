@@ -7,7 +7,6 @@
  */
 
 import * as React from 'react';
-import { Button, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from "./src/views/HomeScreen"
@@ -21,7 +20,7 @@ function App() {
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
-          options={{ title: 'Home' }}
+          options={{ title: 'About Movies' }}
           component={HomeScreen} />
         <Stack.Screen
           name="Details"
@@ -29,7 +28,7 @@ function App() {
           component={DetailsScreen}
           initialParams={
             {
-              id: "error",
+              movieId: "error",
             }} />
       </Stack.Navigator>
     </NavigationContainer>
