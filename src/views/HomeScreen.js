@@ -6,7 +6,7 @@ import {
     Row,
     Header, Toast, List, ListItem, Thumbnail, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Text, Item, Input
 } from 'native-base';
-import { WEB, IMAGE_WEB } from "../const"
+import { WEB, IMAGE_WEB, LANGUAGE, API_KEY } from "../const"
 
 
 function HomeScreen({ navigation }) {
@@ -23,9 +23,10 @@ function HomeScreen({ navigation }) {
         setLoading(inNewSearch);
 
         console.log(searchText)
-        fetch(WEB + 'language=en-US&query=' + searchText + '&page=' + inPageNumber + '&include_adult=false')
+        fetch(WEB + API_KEY + LANGUAGE + '&query=' + searchText + '&page=' + inPageNumber + '&include_adult=false')
             .then((response) => response.json())
             .then((json) => {
+                console.log(json)
                 setData(json.results)
                 setPagesNumber(json.total_pages)
             })
@@ -34,6 +35,10 @@ function HomeScreen({ navigation }) {
                 setLoading(false);
             });
     }
+
+    // const goToDetailsView = () => {
+
+    // }
 
     // const showToast = (text) => {
     //     () => Toast.show({
@@ -61,7 +66,10 @@ function HomeScreen({ navigation }) {
                     </Row>
                 </Body>
                 <Right>
-                    <Button transparent>
+                    <Button transparent
+                        onPress={() => navigation.navigate('Details', {
+                            movieId: element.id
+                        })}>
                         <Text>View</Text>
                     </Button>
                 </Right>
