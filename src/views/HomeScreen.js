@@ -65,7 +65,7 @@ function HomeScreen({ navigation }) {
                         <Text note numberOfLines={1}> {element.popularity}</Text>
                     </Row>
                     <Row style={{ alignItems: "center" }}>
-                        <Text note numberOfLines={1}>Vote: </Text>
+                        <Text note numberOfLines={1}>Votes: </Text>
                         <Text note numberOfLines={1}>{element.vote_count}</Text>
                     </Row>
                 </Body>
