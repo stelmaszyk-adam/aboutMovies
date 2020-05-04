@@ -33,20 +33,21 @@ function HomeScreen({ navigation }) {
         setLoading(inNewSearch);
         setTextForUser("");
 
-        console.log(searchText)
         fetch(WEB + API_KEY + LANGUAGE + '&query=' + searchText + '&page=' + inPageNumber + '&include_adult=false')
             .then((response) => response.json())
             .then((json) => {
-                console.log(json)
                 setData(json.results)
                 setPagesNumber(json.total_pages)
+                setTextForUser("Currently your movie is not available")
             })
             .catch((error) => {
+                setData([])
+                setList([])
+                setPagesNumber(1)
                 setTextForUser("Problem with internet connection")
                 // console.error(error)
             })
             .finally(() => {
-                setTextForUser("Currently your movie is not available")
                 setLoading(false);
             });
     }

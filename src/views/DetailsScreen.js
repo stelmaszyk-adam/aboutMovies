@@ -14,6 +14,8 @@ function DetailsScreen({ navigation, route }) {
     const [data, setData] = useState([]);
     const [productionCountries, setProductionCountries] = useState([]);
     const [genres, setGenres] = useState([]);
+    const [textForUser, setTextForUser] = useState("");
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         setLoading(true)
@@ -23,8 +25,14 @@ function DetailsScreen({ navigation, route }) {
                 setData(json)
                 setProductionCountries(json.production_countries)
                 setGenres(json.genres)
+                setTextForUser("")
+                setIsError(false)
             })
-            .catch((error) => console.error(error))
+            .catch((error) => {
+                setTextForUser("Problem with internet connection")
+                setIsError(true)
+                // console.error(error)
+            })
             .finally(() => {
                 setLoading(false);
             });
@@ -38,68 +46,80 @@ function DetailsScreen({ navigation, route }) {
                     color="#0000ff"
                     style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} /> :
                 <Container>
-                    <Row
-                        size={40}
-                        style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Image
-                            resizeMethod='resize'
-                            source={{ uri: IMAGE_WEB + data.poster_path }}
-                            style={{ width: 200, height: 200, margin: 20 }} />
-                    </Row>
-                    <Row size={60}>
-                        <Col>
-                            <Row>
-                                <Col style={styles.columnStyle}>
-                                    <Text >Title: </Text>
-                                    <Text >{data.title}</Text>
-                                </Col>
+                    {isError ?
+                        <Text style={{
+                            flex: 1,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: 20,
+                            color: "red"
+                        }}>
+                            {textForUser}
+                        </Text> :
+                        <Container>
+                            <Row
+                                size={40}
+                                style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Image
+                                    resizeMethod='resize'
+                                    source={{ uri: IMAGE_WEB + data.poster_path }}
+                                    style={{ width: 200, height: 200, margin: 20 }} />
                             </Row>
-                            <Row style={styles.rowStyle, { paddingTop: 5 }}>
-                                <Col style={styles.columnStyle}>
-                                    <Row>
-                                        <Text >Popularity: </Text>
-                                        <Text>{data.popularity}</Text>
-                                    </Row>
-                                </Col>
-                                <Col style={styles.columnStyle}>
-                                    <Row>
-                                        <Text >Votes: </Text>
-                                        <Text>{data.vote_count}</Text>
-                                    </Row>
-                                </Col>
-                            </Row>
-                            <Row style={styles.columnStyle}>
-                                <Col >
-                                    <Text >Production Countries: </Text>
-                                        <Row>
-                                            {productionCountries.map(element =>
-                                                <Text>{element.name} </Text>
-                                            )}
-                                        </Row>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col >
-                                    <Text>Genres: </Text>
-                                    <Row>
-                                        <ScrollView>
-                                            {genres.map(element =>
-                                                <Text>{element.name} </Text>
-                                            )}
-                                        </ScrollView>
-                                    </Row>
-                                </Col>
-                            </Row>
-                            <Row style={{ flex: 4, paddingTop: 10, }}>
+                            <Row size={60}>
                                 <Col>
-                                    <Text >Description: </Text>
-                                    <ScrollView>
-                                        <Text >{data.overview}</Text>
-                                    </ScrollView>
+                                    <Row>
+                                        <Col style={styles.columnStyle}>
+                                            <Text >Title: </Text>
+                                            <Text >{data.title}</Text>
+                                        </Col>
+                                    </Row>
+                                    <Row style={styles.rowStyle, { paddingTop: 5 }}>
+                                        <Col style={styles.columnStyle}>
+                                            <Row>
+                                                <Text >Popularity: </Text>
+                                                <Text>{data.popularity}</Text>
+                                            </Row>
+                                        </Col>
+                                        <Col style={styles.columnStyle}>
+                                            <Row>
+                                                <Text >Votes: </Text>
+                                                <Text>{data.vote_count}</Text>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                    <Row style={styles.columnStyle}>
+                                        <Col >
+                                            <Text >Production Countries: </Text>
+                                            <Row>
+                                                {productionCountries.map(element =>
+                                                    <Text>{element.name} </Text>
+                                                )}
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col >
+                                            <Text>Genres: </Text>
+                                            <Row>
+                                                <ScrollView>
+                                                    {genres.map(element =>
+                                                        <Text>{element.name} </Text>
+                                                    )}
+                                                </ScrollView>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                    <Row style={{ flex: 4, paddingTop: 10, }}>
+                                        <Col>
+                                            <Text >Description: </Text>
+                                            <ScrollView>
+                                                <Text >{data.overview}</Text>
+                                            </ScrollView>
+                                        </Col>
+                                    </Row>
                                 </Col>
                             </Row>
-                        </Col>
-                    </Row>
+                        </Container>}
                 </Container>
             }
         </Container>
